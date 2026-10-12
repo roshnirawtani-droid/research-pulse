@@ -1,4 +1,3 @@
-import { google } from "googleapis";
 import type { Brief, Domain } from "./types";
 
 // Fallback so the app works before the Sheet is connected.
@@ -8,30 +7,30 @@ export const DEFAULT_DOMAINS: Domain[] = [
   { name: "AI Safety & Security", keywords: ["safety", "jailbreak", "alignment"], category: "cs.CR" },
 ];
 
-export const sheetsEnabled = () => !!(process.env.SHEET_ID && process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+export const sheetsEnabled = () => !!(process.env.SHEET_WEBHOOK_URL && process.env.SHEET_TOKEN);
 
-function client() {
-  const auth = new google.auth.GoogleAuth({
-    credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON!),
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+// The Sheet is reached through a small Google Apps Script web app bound to it (see apps-script/Code.gs).
+async function call(body: Record<string, unknown>) {
+  const res = await fetch(process.env.SHEET_WEBHOOK_URL!, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ token: process.env.SHEET_TOKEN, ...body }),
+    cache: "no-store",
   });
-  return google.sheets({ version: "v4", auth });
+  const json = await res.json();
+  if (json.error) throw new Error(`Sheet: ${json.error}`);
+  return json;
 }
 
-const id = () => process.env.SHEET_ID!;
-
+// Ranges like "domains!A2:C" mean: tab "domains", skip the header row.
 async function read(range: string): Promise<string[][]> {
-  const r = await client().spreadsheets.values.get({ spreadsheetId: id(), range });
-  return (r.data.values as string[][]) ?? [];
+  const [sheet, cols] = range.split("!");
+  const { rows } = await call({ action: "read", sheet });
+  return /\d/.test(cols) ? rows.slice(1) : rows;
 }
 
 async function append(range: string, rows: string[][]) {
-  await client().spreadsheets.values.append({
-    spreadsheetId: id(),
-    range,
-    valueInputOption: "RAW",
-    requestBody: { values: rows },
-  });
+  await call({ action: "append", sheet: range.split("!")[0], rows });
 }
 
 // Tab `domains`: name | keywords (comma-separated) | arxiv_category
