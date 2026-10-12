@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { addDomain, getDomains, sheetsEnabled } from "@/lib/sheets";
+import Reveal from "../Reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -17,17 +18,28 @@ export default async function Settings() {
   const domains = await getDomains();
   return (
     <div>
-      <h1>Monitored domains</h1>
-      <ul>{domains.map((d) => <li key={d.name}><b>{d.name}</b> — {d.keywords.join(", ")} ({d.category})</li>)}</ul>
+      <h1 className="page-title">Monitored <em>domains</em></h1>
+      <div>
+        {domains.map((d, i) => (
+          <Reveal key={d.name} className="drow" delay={i * 70}>
+            <span className="n">{String(i + 1).padStart(2, "0")}</span>
+            <div>
+              <h3>{d.name}</h3>
+              <p>{d.keywords.join(" · ")}</p>
+            </div>
+            <span className="cat">{d.category}</span>
+          </Reveal>
+        ))}
+      </div>
       {sheetsEnabled() ? (
-        <form action={add} style={{ display: "grid", gap: 8, maxWidth: 400 }}>
-          <input name="name" placeholder="Domain name" required />
-          <input name="keywords" placeholder="keywords, comma separated" required />
-          <input name="category" placeholder="arXiv category (e.g. cs.AI)" />
-          <button type="submit">Add domain</button>
+        <form action={add} className="form">
+          <div className="field"><input name="name" placeholder="Domain name" required /></div>
+          <div className="field"><input name="keywords" placeholder="keywords, comma separated" required /></div>
+          <div className="field"><input name="category" placeholder="arXiv category (e.g. cs.AI)" /></div>
+          <button type="submit" className="btn" data-mag><span>Add domain</span></button>
         </form>
       ) : (
-        <p><i>Connect the Google Sheet to edit domains.</i></p>
+        <p className="note">Connect the Google Sheet to edit domains.</p>
       )}
     </div>
   );
