@@ -88,18 +88,6 @@ button { font: inherit; color: inherit; }
 .hero-sub { margin: 26px auto 0; font-size: 13px; color: var(--mute); letter-spacing: 0.02em; }
 .hero-script { font-family: var(--script); font-size: clamp(1.6rem, 3.4vw, 2.4rem); margin-top: 6px; }
 
-/* ---------- ticker of tiny tiles ---------- */
-.ticker { margin: 3vh -28px 5vh; overflow: hidden; display: grid; gap: 14px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
-.track { display: flex; gap: 28px; width: max-content; animation: slide 70s linear infinite; translate: calc(var(--sy, 0) * -0.25px) 0; }
-.track.rev { animation-direction: reverse; animation-duration: 90s; translate: calc(var(--sy, 0) * 0.25px) 0; }
-@keyframes slide { to { transform: translateX(-50%); } }
-.ticker:hover .track { animation-play-state: paused; }
-.tile {
-  width: 52px; height: 52px; flex: none; display: grid; place-items: center; font-size: 8.5px; letter-spacing: 0.04em; color: rgba(244, 243, 235, 0.92);
-  background: linear-gradient(135deg, var(--c1), var(--c2)); border-radius: 2px; transition: transform 0.5s var(--ease), border-radius 0.5s var(--ease), width 0.5s var(--ease);
-}
-.tile:hover { transform: translateY(-8px) rotate(-3deg); border-radius: 26px; width: 74px; }
-
 /* ---------- issue strip ---------- */
 .issue { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; padding: 14px 0; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); }
 .issue b { color: var(--ink); font-weight: 500; }
@@ -191,7 +179,6 @@ button { font: inherit; color: inherit; }
   .entry { grid-template-columns: 1fr; }
   .entry-no { font-size: 2rem; }
   .domain-head { flex-direction: column; align-items: flex-start; }
-  .ticker { margin-left: -18px; margin-right: -18px; }
   .drow { grid-template-columns: 44px 1fr; }
   .drow .cat { grid-column: 2; }
 }
