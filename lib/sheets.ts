@@ -11,10 +11,10 @@ export const sheetsEnabled = () => !!(process.env.SHEET_WEBHOOK_URL && process.e
 
 // The Sheet is reached through a small Google Apps Script web app bound to it (see apps-script/Code.gs).
 async function call(body: Record<string, unknown>) {
-  const res = await fetch(process.env.SHEET_WEBHOOK_URL!, {
+  const res = await fetch(process.env.SHEET_WEBHOOK_URL!.trim(), {
     method: "POST",
     headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify({ token: process.env.SHEET_TOKEN, ...body }),
+    body: JSON.stringify({ token: process.env.SHEET_TOKEN?.trim(), ...body }),
     cache: "no-store",
   });
   const json = await res.json();

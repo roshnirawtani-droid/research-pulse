@@ -9,8 +9,8 @@ export const dynamic = "force-dynamic";
 // Manual trigger: GET /api/cron?secret=...
 export async function GET(req: NextRequest) {
   const ok =
-    req.headers.get("authorization") === `Bearer ${process.env.CRON_SECRET}` ||
-    req.nextUrl.searchParams.get("secret") === process.env.CRON_SECRET;
+    req.headers.get("authorization") === `Bearer ${process.env.CRON_SECRET?.trim()}` ||
+    req.nextUrl.searchParams.get("secret") === process.env.CRON_SECRET?.trim();
   if (!ok) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   try {

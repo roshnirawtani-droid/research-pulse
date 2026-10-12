@@ -25,8 +25,8 @@ export function briefHtml(b: Brief): string {
 export async function sendBrief(b: Brief) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
-    from: process.env.BRIEF_FROM_EMAIL!,
-    to: process.env.BRIEF_TO_EMAIL!,
+    from: process.env.BRIEF_FROM_EMAIL?.trim() || "Research Pulse <onboarding@resend.dev>",
+    to: process.env.BRIEF_TO_EMAIL!.trim(),
     subject: `Research Pulse · week of ${b.id}`,
     html: briefHtml(b),
   });
@@ -36,8 +36,8 @@ export async function sendBrief(b: Brief) {
 export async function sendFailureAlert(message: string) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({
-    from: process.env.BRIEF_FROM_EMAIL!,
-    to: process.env.BRIEF_TO_EMAIL!,
+    from: process.env.BRIEF_FROM_EMAIL?.trim() || "Research Pulse <onboarding@resend.dev>",
+    to: process.env.BRIEF_TO_EMAIL!.trim(),
     subject: "Research Pulse run FAILED",
     html: `<p>The weekly run failed:</p><pre>${esc(message)}</pre>`,
   });
