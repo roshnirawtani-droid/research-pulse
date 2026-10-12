@@ -1,6 +1,6 @@
-import { Fragment } from "react";
 import { unstable_cache } from "next/cache";
 import BriefView from "./BriefView";
+import Dispatch from "./Dispatch";
 import { buildBrief, latestBrief } from "@/lib/brief";
 import { sheetsEnabled } from "@/lib/sheets";
 
@@ -12,21 +12,25 @@ const liveOnce = unstable_cache(buildBrief, ["live-brief"], { revalidate: 86400 
 
 export default async function Home() {
   const brief = sheetsEnabled() ? await latestBrief() : await liveOnce();
-  const words = ["Composed", "weekly", "research."];
   return (
     <>
       <section className="hero">
-        <h1>
-          {words.map((w, i) => (
-            <Fragment key={w}>
-              <span className="w"><span style={{ ["--i" as string]: i }}>{i === 1 ? <em>{w}</em> : w}</span></span>{" "}
-            </Fragment>
-          ))}
-        </h1>
-        <p className="hero-script">What mattered on arXiv, in ten minutes.</p>
-        <p className="hero-sub">New papers, scored and explained from the abstract. You decide what to read.</p>
+        <div className="blobs" aria-hidden>
+          <span className="blob b1" />
+          <span className="blob b2" />
+        </div>
+        <div className="hero-copy">
+          <div className="hero-kicker">The front page</div>
+          <h1 className="wipe">
+            The week in <em>research,</em> set in type.
+          </h1>
+          <p className="hero-deck">
+            New papers from arXiv, scored for significance and explained from the abstract. Ten minutes to read, and you decide what goes to a client.
+          </p>
+        </div>
+        <Dispatch />
       </section>
-      {brief ? <BriefView brief={brief} /> : <p className="note">No brief yet. The first one arrives Monday 7 AM IST.</p>}
+      {brief ? <BriefView brief={brief} /> : <p className="note">No edition yet. The first one goes to press Monday 7 AM IST.</p>}
     </>
   );
 }

@@ -18,10 +18,10 @@ export default async function Settings() {
   const domains = await getDomains();
   return (
     <div>
-      <h1 className="page-title">Monitored <em>domains</em></h1>
-      <div>
+      <h1 className="page-title wipe">Monitored <em>domains</em></h1>
+      <div className="drows">
         {domains.map((d, i) => (
-          <Reveal key={d.name} className="drow" delay={i * 70}>
+          <Reveal key={d.name} className="drow" delay={i * 60}>
             <span className="n">{String(i + 1).padStart(2, "0")}</span>
             <div>
               <h3>{d.name}</h3>
@@ -33,6 +33,7 @@ export default async function Settings() {
       </div>
       {sheetsEnabled() ? (
         <form action={add} className="form">
+          <div className="form-tag">Commission a new section</div>
           <div className="field"><input name="name" placeholder="Domain name" required /></div>
           <div className="field"><input name="keywords" placeholder="keywords, comma separated" required /></div>
           <div className="field"><input name="category" placeholder="arXiv category (e.g. cs.AI)" /></div>

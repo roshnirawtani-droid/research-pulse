@@ -22,11 +22,11 @@ export function briefHtml(b: Brief): string {
 <hr><small>AI-suggested from abstracts only. Verify the original paper before telling a client anything.</small></div>`;
 }
 
-export async function sendBrief(b: Brief) {
+export async function sendBrief(b: Brief, to?: string) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
     from: process.env.BRIEF_FROM_EMAIL?.trim() || "Research Pulse <onboarding@resend.dev>",
-    to: process.env.BRIEF_TO_EMAIL!.trim(),
+    to: (to ?? process.env.BRIEF_TO_EMAIL!).trim(),
     subject: `Research Pulse · week of ${b.id}`,
     html: briefHtml(b),
   });

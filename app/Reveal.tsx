@@ -1,7 +1,7 @@
 "use client";
 import { createElement, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
-type Tag = "div" | "section" | "h1" | "h2" | "p" | "li" | "span" | "details";
+type Tag = "div" | "section" | "article" | "h1" | "h2" | "p" | "li" | "span" | "details";
 
 // Fades/rises its children into view the first time they scroll on screen.
 export default function Reveal({
