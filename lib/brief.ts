@@ -25,10 +25,9 @@ export async function buildBrief(): Promise<Brief> {
   return { id: now.toISOString().slice(0, 10), generatedAt: now.toISOString(), domains: out };
 }
 
-export async function runPipeline(): Promise<Brief> {
-  const brief = await buildBrief();
+// Persist only after the email went out, so a failed send never marks papers as "seen".
+export async function persistBrief(brief: Brief) {
   await Promise.all([saveBrief(brief), logPapers(brief)]);
-  return brief;
 }
 
 export async function latestBrief(): Promise<Brief | null> {

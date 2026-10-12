@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { runPipeline } from "@/lib/brief";
+import { buildBrief, persistBrief } from "@/lib/brief";
 import { sendBrief, sendFailureAlert } from "@/lib/email";
 
 export const maxDuration = 300;
@@ -14,8 +14,9 @@ export async function GET(req: NextRequest) {
   if (!ok) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   try {
-    const brief = await runPipeline();
+    const brief = await buildBrief();
     await sendBrief(brief);
+    await persistBrief(brief);
     return NextResponse.json({ ok: true, id: brief.id, domains: brief.domains.length });
   } catch (e) {
     const msg = (e as Error).message;

@@ -26,7 +26,11 @@ async function call(body: Record<string, unknown>) {
 async function read(range: string): Promise<string[][]> {
   const [sheet, cols] = range.split("!");
   const { rows } = await call({ action: "read", sheet });
-  return /\d/.test(cols) ? rows.slice(1) : rows;
+  const m = cols.match(/^([A-Z]+)\d*(?::([A-Z]+)\d*)?$/)!;
+  const first = m[1].charCodeAt(0) - 65;
+  const last = (m[2] ?? m[1]).charCodeAt(0) - 65;
+  const body: string[][] = /\d/.test(cols) ? rows.slice(1) : rows;
+  return body.map((r) => r.slice(first, last + 1));
 }
 
 async function append(range: string, rows: string[][]) {
